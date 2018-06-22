@@ -1,0 +1,38 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: mlpreg-deployment
+  labels:
+    app: mlpreg
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mlpreg
+  template:
+    metadata:
+      labels:
+        app: mlpreg
+    spec:
+      terminationGracePeriodSeconds: 30  
+      containers:
+      - name: mlpreg
+        image: mbenachour/mlpreg:latest
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8088
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlpreg-svc
+  labels:
+    app: mlpreg
+    #tier: frontend
+spec:
+  type: NodePort 
+  ports:
+  - port: 8088
+  selector:
+    app: mlpreg
+    #tier: frontend
